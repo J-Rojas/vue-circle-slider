@@ -26,10 +26,10 @@ export default class CircleSliderState {
   /*
    */
   get angleValue () {
-    return (Math.min(
+    return Math.min(
       this.offset + this.angleUnit * this.currentStepIndex,
       this.maxArcLength - Number.EPSILON
-    )) - 0.00001 // correct for 100% value
+    )
   }
 
   /*

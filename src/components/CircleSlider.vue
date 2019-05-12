@@ -7,8 +7,8 @@
       @mouseup="handleMouseUp"
     >
       <g>
-        <path :stroke="circleColor" fill="none" :stroke-width="cpMainCircleStrokeWidth" :d="cpPathD(cpStartX, cpStartY, cpEndX, cpEndY, 1, 1)"></path>
-        <path :stroke="progressColor" fill="none" :stroke-width="cpPathStrokeWidth" :d="cpPathD(cpOriginX, cpOriginY, cpPathX, cpPathY, cpPathLongArc, cpPathDirection)"></path>
+        <path :stroke="circleColor" fill="none" :stroke-width="cpMainCircleStrokeWidth" :d="cpPathD(cpStartAngle, cpEndAngle, 1)"></path>
+        <path :stroke="progressColor" fill="none" :stroke-width="cpPathStrokeWidth" :d="cpPathD(cpOriginAngle, cpAngle, cpPathDirection)"></path>
         <circle :fill="knobColor" :r="cpKnobRadius" :cx="cpPathX" :cy="cpPathY"></circle>
       </g>
     </svg>
@@ -162,38 +162,26 @@ export default {
     cpMainCircleStrokeWidth () {
       return this.circleWidth || (this.side / 2) / this.circleWidthRel
     },
-    cpPathLongArc() {
-      return (this.cpAngle < Math.PI + this.arcOffsetRadians) ? 0 : 1
-    },
     cpPathDirection() {
-      return (this.cpAngle < this.cpOriginRadians + this.arcOffsetRadians) ? 0 : 1
+      return (this.cpAngle <= this.cpOriginRadians + this.arcOffsetRadians) ? 0 : 1
     },
-    cpStartX() {
-      return this.pathX(this.arcOffsetRadians)
+    cpPathX() {
+      return this.pathX(this.cpAngle)
     },
-    cpStartY() {
-      return this.pathY(this.arcOffsetRadians)
+    cpPathY() {
+      return this.pathY(this.cpAngle)
     },
-    cpEndX() {
-      return this.pathX((this.arcLengthRadians+this.arcOffsetRadians)*.99999)
+    cpStartAngle() {
+      return this.arcOffsetRadians
     },
-    cpEndY() {
-      return this.pathY((this.arcLengthRadians+this.arcOffsetRadians)*.99999)
+    cpEndAngle() {
+      return (this.arcLengthRadians+this.arcOffsetRadians)
     },
     cpOriginRadians() {
       return this.circleSliderState.angleUnit * (this.originValue - this.min)
     },
-    cpOriginX() {
-      return this.pathX(this.arcOffsetRadians + this.cpOriginRadians)
-    },
-    cpOriginY() {
-      return this.pathY(this.arcOffsetRadians + this.cpOriginRadians)
-    },
-    cpPathX () {
-      return this.cpCenter + this.radius * Math.cos(this.cpAngle)
-    },
-    cpPathY () {
-      return this.cpCenter + this.radius * Math.sin(this.cpAngle)
+    cpOriginAngle() {
+      return this.arcOffsetRadians + this.cpOriginRadians
     },
     cpPathStrokeWidth () {
       return this.progressWidth || (this.side / 2) / this.progressWidthRel
@@ -214,18 +202,43 @@ export default {
   },
   methods: {
 
-    cpPathD (startX, startY, endX, endY, longArc, direction) {
+    cpPathD (startAngle, endAngle, direction) {
       let parts = []
+
+      let startX = this.pathX(startAngle)
+      let startY = this.pathY(startAngle)
+
       parts.push('M' + startX)
       parts.push(startY)
+
+      while (Math.abs(endAngle - startAngle) >= Math.PI) {
+        let angle = startAngle + Math.PI
+        var endX = this.pathX(angle)
+        var endY = this.pathY(angle)
+
+        parts.push('A')
+        parts.push(this.radius)
+        parts.push(this.radius)
+        parts.push(0)
+        parts.push(1)
+        parts.push(direction)
+        parts.push(endX)
+        parts.push(endY)
+
+        startAngle += (endAngle > startAngle ? 1 : -1) * Math.PI
+      }
+
+      endX = this.pathX(endAngle)
+      endY = this.pathY(endAngle)
       parts.push('A')
       parts.push(this.radius)
       parts.push(this.radius)
       parts.push(0)
-      parts.push(longArc)
+      parts.push(Math.abs(endAngle - startAngle) >= Math.PI ? 1 : 0)
       parts.push(direction)
       parts.push(endX)
       parts.push(endY)
+
       return parts.join(' ')
     },
 
@@ -327,9 +340,20 @@ export default {
     /*
      */
     updateSlider () {
-      const angle = (this.touchPosition.sliderAngle - this.arcOffsetRadians + Math.PI * 2) % (Math.PI * 2)
+      var angle = (this.touchPosition.sliderAngle - this.arcOffsetRadians + Math.PI * 2) % (Math.PI * 2)
+      var angleMod = this.angle % (Math.PI * 2)
+      var loops = Math.trunc(this.angle / (Math.PI * 2))
+      if (angle < Math.PI / 2 && angleMod > 1.5 * Math.PI && this.angle < this.arcLengthDegrees) {
+        loops += 1
+      } else if (angleMod < Math.PI / 2 && angle > 1.5 * Math.PI) {
+        loops -= 1
+      }
+
+      loops = Math.max(0, loops)
+      angle = angle + loops * Math.PI * 2
+
       if (Math.abs(this.angle - angle) < Math.PI) {
-        this.updateAngle(Math.max( 0, Math.min(angle, this.arcLengthRadians)))
+        this.updateAngle(Math.max(0.0, Math.min(angle, this.arcLengthRadians)))
       }
     },
 
