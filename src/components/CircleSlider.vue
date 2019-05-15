@@ -36,8 +36,13 @@ export default {
   },
 
   mounted () {
-    this.touchPosition = new TouchPosition(this.$refs._svg, this.radius, this.radius / 2)
+    this.createTouchPosition()
   },
+
+  updated() {
+    this.createTouchPosition()
+  },
+
   props: {
     value: {
       type: Number,
@@ -202,6 +207,10 @@ export default {
   },
   methods: {
 
+    createTouchPosition() {
+      this.touchPosition = new TouchPosition(this.$refs._svg, this.radius, this.radius / 2)
+    },
+
     cpPathD (startAngle, endAngle, direction) {
       let parts = []
 
@@ -261,7 +270,7 @@ export default {
     handleClick (e) {
       this.touchPosition.setNewPosition(e)
       if (this.touchPosition.isTouchWithinSliderRange) {
-        const newAngle = this.touchPosition.sliderAngle
+        const newAngle = this.calculateAngle()
         this.animateSlider(this.angle, newAngle)
       }
     },
@@ -316,6 +325,22 @@ export default {
       }
     },
 
+    calculateAngle() {
+      var angle = (this.touchPosition.sliderAngle - this.arcOffsetRadians + Math.PI * 2) % (Math.PI * 2)
+      var angleMod = this.angle % (Math.PI * 2)
+      var loops = Math.trunc(this.angle / (Math.PI * 2))
+      if (angle < Math.PI / 2 && angleMod > 1.5 * Math.PI && this.angle < this.arcLengthDegrees) {
+        loops += 1
+      } else if (angleMod < Math.PI / 2 && angle > 1.5 * Math.PI) {
+        loops -= 1
+      }
+
+      loops = Math.max(0, loops)
+      angle = angle + loops * Math.PI * 2
+      
+      return angle
+    },
+
     /*
      */
     updateAngle (angle) {
@@ -340,18 +365,7 @@ export default {
     /*
      */
     updateSlider () {
-      var angle = (this.touchPosition.sliderAngle - this.arcOffsetRadians + Math.PI * 2) % (Math.PI * 2)
-      var angleMod = this.angle % (Math.PI * 2)
-      var loops = Math.trunc(this.angle / (Math.PI * 2))
-      if (angle < Math.PI / 2 && angleMod > 1.5 * Math.PI && this.angle < this.arcLengthDegrees) {
-        loops += 1
-      } else if (angleMod < Math.PI / 2 && angle > 1.5 * Math.PI) {
-        loops -= 1
-      }
-
-      loops = Math.max(0, loops)
-      angle = angle + loops * Math.PI * 2
-
+      const angle = this.calculateAngle()
       if (Math.abs(this.angle - angle) < Math.PI) {
         this.updateAngle(Math.max(0.0, Math.min(angle, this.arcLengthRadians)))
       }
