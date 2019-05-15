@@ -39,7 +39,7 @@ export default {
     this.createTouchPosition()
   },
 
-  updated() {
+  updated () {
     this.createTouchPosition()
   },
 
@@ -167,25 +167,25 @@ export default {
     cpMainCircleStrokeWidth () {
       return this.circleWidth || (this.side / 2) / this.circleWidthRel
     },
-    cpPathDirection() {
+    cpPathDirection () {
       return (this.cpAngle <= this.cpOriginRadians + this.arcOffsetRadians) ? 0 : 1
     },
-    cpPathX() {
+    cpPathX () {
       return this.pathX(this.cpAngle)
     },
-    cpPathY() {
+    cpPathY () {
       return this.pathY(this.cpAngle)
     },
-    cpStartAngle() {
+    cpStartAngle () {
       return this.arcOffsetRadians
     },
-    cpEndAngle() {
-      return (this.arcLengthRadians+this.arcOffsetRadians)
+    cpEndAngle () {
+      return (this.arcLengthRadians + this.arcOffsetRadians)
     },
-    cpOriginRadians() {
+    cpOriginRadians () {
       return this.circleSliderState.angleUnit * (this.originValue - this.min)
     },
-    cpOriginAngle() {
+    cpOriginAngle () {
       return this.arcOffsetRadians + this.cpOriginRadians
     },
     cpPathStrokeWidth () {
@@ -194,20 +194,20 @@ export default {
     cpKnobRadius () {
       return this.knobRadius || (this.side / 2) / this.knobRadiusRel
     },
-    radius() {
+    radius () {
       let maxCurveWidth = Math.max(this.cpMainCircleStrokeWidth, this.cpPathStrokeWidth)
       return (this.side / 2) - Math.max(maxCurveWidth, this.cpKnobRadius * 2) / 2
     },
-    arcLengthRadians() {
+    arcLengthRadians () {
       return this.arcLengthDegrees * Math.PI * 2 / 360
     },
-    arcOffsetRadians() {
+    arcOffsetRadians () {
       return this.arcOffsetDegrees * Math.PI * 2 / 360
     }
   },
   methods: {
 
-    createTouchPosition() {
+    createTouchPosition () {
       this.touchPosition = new TouchPosition(this.$refs._svg, this.radius, this.radius / 2)
     },
 
@@ -325,7 +325,7 @@ export default {
       }
     },
 
-    calculateAngle() {
+    calculateAngle () {
       var angle = (this.touchPosition.sliderAngle - this.arcOffsetRadians + Math.PI * 2) % (Math.PI * 2)
       var angleMod = this.angle % (Math.PI * 2)
       var loops = Math.trunc(this.angle / (Math.PI * 2))
@@ -337,7 +337,7 @@ export default {
 
       loops = Math.max(0, loops)
       angle = angle + loops * Math.PI * 2
-      
+
       return angle
     },
 
