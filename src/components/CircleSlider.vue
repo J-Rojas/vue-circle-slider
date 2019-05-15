@@ -312,7 +312,7 @@ export default {
     handleTouchMove (e) {
       this.$emit('touchmove')
       // Do nothing if two or more fingers used
-      if (e.targetTouches.length > 1 || e.changedTouches.length > 1 || e.touches.length > 1) {
+      if (e.targetTouches.length > 1) {
         return true
       }
 
