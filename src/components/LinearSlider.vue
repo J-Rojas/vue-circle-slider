@@ -26,7 +26,7 @@ export default {
     }, (_, i) => this.min + i * this.stepSize)
 
     this.currentStepValue = this.circleSliderState.currentStep
-    this.createSliderState ()
+    this.createSliderState()
     this.originValue = this.origin === null ? this.min : this.origin
     this.originValue = Math.min(this.max, Math.max(this.min, this.originValue))
 
@@ -34,12 +34,12 @@ export default {
   },
 
   mounted () {
-    this.createTouchPosition ()
+    this.createTouchPosition()
   },
 
   updated () {
-    this.createTouchPosition ()
-    this.createSliderState ()
+    this.createTouchPosition()
+    this.createSliderState()
   },
 
   props: {
@@ -181,7 +181,7 @@ export default {
       return this.cpProgressRadiusOrigin - this.currentStepValue / this.cpCenterValue * this.cpRadius
     },
     cpAngleRadians () {
-      return this.angle * Math.PI / 180.0;
+      return this.angle * Math.PI / 180.0
     }
   },
   methods: {
@@ -204,7 +204,7 @@ export default {
 
       parts.push('M' + startX)
       parts.push(startY)
-      parts.push("L" + endX)
+      parts.push('L' + endX)
       parts.push(endY)
 
       return parts.join(' ')
@@ -276,13 +276,11 @@ export default {
       const lastTouch = e.targetTouches.item(e.targetTouches.length - 1)
       this.touchPosition.setNewPosition(lastTouch)
 
-      //if (this.touchPosition.isTouchWithinSliderDot(this.cpPathX, this.cpPathY)) {
-        e.preventDefault()
-        this.updateSlider()
-      //}
+      e.preventDefault()
+      this.updateSlider()
     },
 
-    calculateValueInPixels() {
+    calculateValueInPixels () {
       var value = this.cpRadius - this.touchPosition.cpSliderRadius
       return value
     },

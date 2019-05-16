@@ -25,7 +25,7 @@ export default class TouchPosition {
     return (Math.atan2(this.relativeY - this.center, this.relativeX - this.center) + 2 * Math.PI) % (Math.PI * 2)
   }
 
-  get cpSliderRadius() {
+  get cpSliderRadius () {
     let x = this.relativeX - this.center
     let y = this.relativeY - this.center
     let cos = Math.cos(this.angle)
@@ -42,7 +42,7 @@ export default class TouchPosition {
     return Math.abs(touchOffset - this.sliderRadius) <= this.sliderTolerance
   }
 
-  isTouchWithinSliderDot(currX, currY) {
+  isTouchWithinSliderDot (currX, currY) {
     const touchOffset = Math.sqrt(Math.pow(Math.abs(this.relativeX - currX), 2) + Math.pow(Math.abs(this.relativeY - currY), 2))
     return Math.abs(touchOffset - this.sliderRadius) <= this.sliderTolerance
   }

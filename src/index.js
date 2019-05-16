@@ -1,8 +1,6 @@
 import CircleSlider from './components/CircleSlider.vue'
 import LinearSlider from './components/LinearSlider.vue'
 
-
-
 // Install the components
 export function install (Vue) {
   Vue.component('circle-slider', CircleSlider)
