@@ -1,14 +1,19 @@
 import CircleSlider from './components/CircleSlider.vue'
+import LinearSlider from './components/LinearSlider.vue'
+
+
 
 // Install the components
 export function install (Vue) {
   Vue.component('circle-slider', CircleSlider)
+  Vue.component('linear-slider', LinearSlider)
   /* -- Add more components here -- */
 }
 
 // Expose the components
 export {
-  CircleSlider
+  CircleSlider,
+  LinearSlider
   /* -- Add more components here -- */
 }
 
@@ -18,7 +23,7 @@ export {
 // Plugin
 const plugin = {
   /* eslint-disable no-undef */
-  version: VERSION,
+  version: 'v1.0',
   install
 }
 
