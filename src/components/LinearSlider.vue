@@ -25,8 +25,8 @@ export default {
       length: this.stepsCount
     }, (_, i) => this.min + i * this.stepSize)
 
-    this.currentStepValue = this.circleSliderState.currentStep
     this.createSliderState()
+    this.currentStepValue = this.circleSliderState.currentStep
     this.originValue = this.origin === null ? this.min : this.origin
     this.originValue = Math.min(this.max, Math.max(this.min, this.originValue))
 
